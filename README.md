@@ -42,4 +42,8 @@
 
 ---
 
+- Instalación directa:
+```bash
+  bash <(curl -s https://raw.githubusercontent.com/VIPNETBR/bakken-backend/main/install.sh)
+```
 # ¡Listo para usar!
