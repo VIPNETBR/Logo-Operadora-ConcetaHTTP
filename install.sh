@@ -22,6 +22,19 @@ source /opt/bakken_env/bin/activate
 pip install --upgrade pip
 pip install fastapi uvicorn[standard]
 
+# Crear carpeta del proyecto
+mkdir -p /opt/bakken
+
+# Descargar main.py
+curl -s -o /opt/bakken/main.py https://raw.githubusercontent.com/VIPNETBR/bakken-backend/main/backend/main.py
+
+# Descargar menu.sh
+curl -s -o /opt/bakken/menu.sh https://raw.githubusercontent.com/VIPNETBR/bakken-backend/main/scripts/menu.sh
+chmod +x /opt/bakken/menu.sh
+
+# Ajustar path de base de datos en menu.sh
+sed -i 's|DB="../backend.db"|DB="/opt/bakken/backend.db"|' /opt/bakken/menu.sh
+
 # Crear base de datos SQLite si no existe
 DB_PATH="/opt/bakken/backend.db"
 if [ ! -f "$DB_PATH" ]; then
@@ -44,14 +57,7 @@ else
     echo "Base de datos existente detectada en $DB_PATH."
 fi
 
-# Copiar backend y scripts a /opt/bakken
-mkdir -p /opt/bakken
-cp backend/main.py /opt/bakken/
-cp scripts/menu.sh /opt/bakken/
-chmod +x /opt/bakken/menu.sh
-sed -i 's|DB="../backend.db"|DB="/opt/bakken/backend.db"|' /opt/bakken/menu.sh
-
-# Crear servicio systemd para uvicorn (en puerto 5000)
+# Crear servicio systemd para Uvicorn (en puerto 5000)
 cat > /etc/systemd/system/bakken.service <<EOF
 [Unit]
 Description=Bakken Backend FastAPI Service
@@ -68,7 +74,7 @@ Restart=always
 WantedBy=multi-user.target
 EOF
 
-# Recargar systemd e iniciar servicio
+# Habilitar servicio
 systemctl daemon-reload
 systemctl enable bakken.service
 systemctl start bakken.service
