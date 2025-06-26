@@ -1,49 +1,21 @@
-# Sistema Backend Bakken para VPS Ubuntu 20/22/24
+# 🔥 Bakken Backend - Sistema de Validación por IP + Identificador
 
-## Requisitos
-
-- VPS con Ubuntu 20.04, 22.04 o 24.04
-- Acceso root o sudo
-
-## Instalación
-
-1. Sube todo el contenido a tu VPS.
-2. Ejecuta el script de instalación:
-   ```bash
-   sudo bash install.sh
-   ```
-3. El backend arrancará en puerto 80, con Nginx como proxy reverso.
-
-## Administración
-
-- Para administrar clientes y CDN ejecuta:
-  ```bash
-  /opt/bakken/menu.sh
-  ```
-
-- El menú te permite agregar, editar, renovar, eliminar clientes y cambiar dominio CDN.
-
-## Uso WebSocket
-
-- Los clientes se conectan vía WebSocket en puerto 80 al dominio configurado.
-- Deben enviar en el payload JSON el identificador de cliente:
-  ```json
-  {"identifier":"020"}
-  ```
-- El servidor valida IP + identificador + vencimiento antes de aceptar conexión.
+Este es un backend ligero basado en **FastAPI + Uvicorn**, con soporte completo para **WebSocket** en el puerto 80 y validación mediante **identificador, IP y fecha de vencimiento**. Incluye sistema automático de instalación, servicio persistente (`systemd`) y menú de administración.
 
 ---
 
-## Nota
+## ⚙️ Requisitos
 
-- Puedes migrar o reinstalar en otra máquina copiando `/opt/bakken/backend.db` para conservar datos.
-
-- Para más personalizaciones modifica los archivos en `/opt/bakken/`.
+- VPS Ubuntu 20.04, 22.04 o 24.04 (64 bits)
+- Acceso como root
+- Puerto 80 disponible (para WebSocket y HTTP)
+- Dominio opcional (puede funcionar solo con IP pública)
 
 ---
 
-- Instalación directa:
+## 🚀 Instalación (automática en 1 línea)
+
+Ejecuta este comando como `root` en tu VPS:
+
 ```bash
-  bash <(curl -s https://raw.githubusercontent.com/VIPNETBR/bakken-backend/main/install.sh)
-```
-# ¡Listo para usar!
+bash <(curl -s https://raw.githubusercontent.com/VIPNETBR/bakken-backend/main/install.sh)
