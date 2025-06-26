@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+
+# SQLite
+*.db
+*.sqlite3
+
+# Entorno virtual
+bakken_env/
+.env
+
+# Archivos temporales
+*.log
+*.zip
