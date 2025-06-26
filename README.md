@@ -19,3 +19,9 @@ Ejecuta este comando como `root` en tu VPS:
 
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/VIPNETBR/bakken-backend/main/install.sh)
+```
+Lego ejecutar este comando:
+
+```bash
+/opt/bakken/menu.sh
+```
