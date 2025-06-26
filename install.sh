@@ -14,7 +14,7 @@ echo "Versión de Ubuntu detectada: $ver"
 
 # Actualizar paquetes e instalar dependencias
 apt update && apt upgrade -y
-apt install -y python3 python3-pip python3-venv nginx sqlite3
+apt install -y python3 python3-pip python3-venv nginx sqlite3 git curl
 
 # Crear entorno virtual e instalar dependencias Python
 python3 -m venv /opt/bakken_env
@@ -49,11 +49,9 @@ mkdir -p /opt/bakken
 cp backend/main.py /opt/bakken/
 cp scripts/menu.sh /opt/bakken/
 chmod +x /opt/bakken/menu.sh
-
-# Ajustar DB_PATH para menu.sh (se asume relativo a /opt/bakken)
 sed -i 's|DB="../backend.db"|DB="/opt/bakken/backend.db"|' /opt/bakken/menu.sh
 
-# Crear servicio systemd para uvicorn
+# Crear servicio systemd para uvicorn (en puerto 5000)
 cat > /etc/systemd/system/bakken.service <<EOF
 [Unit]
 Description=Bakken Backend FastAPI Service
@@ -63,7 +61,7 @@ After=network.target
 User=root
 WorkingDirectory=/opt/bakken
 Environment="PATH=/opt/bakken_env/bin"
-ExecStart=/opt/bakken_env/bin/uvicorn main:app --host 0.0.0.0 --port 80
+ExecStart=/opt/bakken_env/bin/uvicorn main:app --host 127.0.0.1 --port 5000
 Restart=always
 
 [Install]
@@ -82,7 +80,7 @@ server {
     server_name _;
 
     location / {
-        proxy_pass http://127.0.0.1:80;
+        proxy_pass http://127.0.0.1:5000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -93,7 +91,8 @@ server {
 EOF
 
 ln -sf /etc/nginx/sites-available/bakken /etc/nginx/sites-enabled/bakken
+rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl restart nginx
 
-echo "Instalación completada."
-echo "Ejecuta '/opt/bakken/menu.sh' para administrar el sistema."
+echo "✅ Instalación completada."
+echo "➡ Ejecuta '/opt/bakken/menu.sh' para administrar el sistema."
